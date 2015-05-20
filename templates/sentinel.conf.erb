@@ -6,7 +6,7 @@ loglevel <%= @sentinel_loglevel %>
 port <%= @sentinel_port -%>
 
 <% sentinel_monitors.sort.each do |name, rule| %>
-sentinel monitor <%= name -%> <%= rule['master_host'] -%>  <%= rule['master_port'] -%> <%= rule['quorum'] %>
+sentinel monitor <%= name -%> <%= rule['master-host'] -%>  <%= rule['master-port'] -%> <%= rule['quorum'] %>
 <% rule.each do |param, value| %>
     sentinel <%= param -%> <%= name -%> <%= value -%>
 <% end %>

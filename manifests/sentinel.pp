@@ -38,8 +38,8 @@
 # redis::sentinel { 'sentinel':
 #   sentinel_monitors => {
 #     '0' => {
-#       ip => '127.0.0.1',
-#       port => 6379,
+#       master-host => '127.0.0.1',
+#       master-port => 6379,
 #       quorum => 2,
 #       auth-pass => 'my secret password'
 #     }
