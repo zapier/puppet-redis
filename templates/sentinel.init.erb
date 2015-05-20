@@ -13,7 +13,7 @@
 
 REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel
 REDIS_NAME="redis-sentinel_<%= @title %>"
-PIDFILE="/var/run/redis-sentinel-<%= @title %>.pid"
+REDIS_PID="/var/run/redis-sentinel-<%= @title %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @title %>"
 REDIS_CONF_FILE="/etc/redis/sentinel.<%= @title %>.conf"
 
