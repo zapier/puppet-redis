@@ -43,4 +43,5 @@ class redis::params {
       parallel-syncs => 1,
       failover-timeout => 180000
     }
+  }
 }
