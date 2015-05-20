@@ -38,7 +38,7 @@
 # redis::sentinel { 'sentinel':
 #   sentinel_monitors => {
 #     '0' => {
-#       ip => 127.0.0.1,
+#       ip => '127.0.0.1',
 #       port => 6379,
 #       quorum => 2,
 #       auth-pass => 'my secret password'
@@ -50,7 +50,7 @@ define redis::sentinel (
   $sentinel_port         = $redis::params::sentinel_port,
   $sentinel_bind_address = $redis::params::sentinel_bind_address,
   $sentinel_loglevel     = $redis::params::sentinel_loglevel,
-  $sentinel_loglevel     = $redis::params::sentinel_monitors
+  $sentinel_monitors     = $redis::params::sentinel_monitors
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing
