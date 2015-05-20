@@ -32,4 +32,15 @@ class redis::params {
   $redis_user = 'root'
   $redis_group = 'root'
 
+  $sentinel_port = '26379'
+  $sentinel_loglevel = 'notice'
+  $sentinel_monitors = {
+    'mymaster' => {
+      master_host => '127.0.0.1',
+      master_port => 6379,
+      quorum => 2,
+      down-after-milliseconds => 30000,
+      parallel-syncs => 1,
+      failover-timeout => 180000,
+    }
 }

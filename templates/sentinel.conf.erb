@@ -1,0 +1,13 @@
+daemonize yes
+
+logfile /var/log/redis-sentinel-<%= @title %>.log
+loglevel <%= @sentinel_loglevel %>
+
+port <%= @sentinel_port -%>
+
+<% sentinel_monitors.sort.each do |name, rule| %>
+sentinel monitor <%= name -%> <%= rule['master_host'] -%>  <%= rule['master_port'] -%> <%= rule['quorum'] %>
+<% rule.each do |param, value| %>
+    sentinel <%= param -%> <%= name -%> <%= value -%>
+<% end %>
+<% end %>
