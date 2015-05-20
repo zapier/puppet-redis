@@ -54,8 +54,8 @@ define redis::sentinel (
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing
-  # Class['redis'] -> Redis::Instance[$name]
-  Exec['install-redis'] -> Redis::Instance[$name]
+  # Class['redis'] -> Redis::Sentinel[$name]
+  Exec['install-redis'] -> Redis::Sentinel[$name]
   include redis
 
   file { "sentinel-init-${title}":
