@@ -41,6 +41,6 @@ class redis::params {
       quorum => 2,
       down-after-milliseconds => 30000,
       parallel-syncs => 1,
-      failover-timeout => 180000,
+      failover-timeout => 180000
     }
 }
