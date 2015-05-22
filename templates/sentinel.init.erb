@@ -5,17 +5,17 @@
 # chkconfig:   - 85 15
 # description: Redis Sentinel is a monitor for redis servers
 # processname: redis-sentinel
-# config:      /etc/redis/sentinel.<%= @title %>.conf
-# pidfile:     /var/run/redis-sentinel-<%= @title %>.pid
+# config:      /etc/redis/sentinel.conf
+# pidfile:     /var/run/redis-sentinel.pid
 
 # Source function library.
 . /lib/lsb/init-functions
 
 REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel
-REDIS_NAME="redis-sentinel_<%= @title %>"
-REDIS_PID="/var/run/redis-sentinel-<%= @title %>.pid"
-REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @title %>"
-REDIS_CONF_FILE="/etc/redis/sentinel.<%= @title %>.conf"
+REDIS_NAME="redis-sentinel"
+REDIS_PID="/var/run/redis-sentinel.pid"
+REDIS_LOCKFILE="/var/lock/redis-sentinel"
+REDIS_CONF_FILE="/etc/redis/sentinel.conf"
 
 [ -x "$REDIS_EXEC" ] || exit 5
 

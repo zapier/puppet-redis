@@ -1,6 +1,8 @@
 daemonize yes
 
-logfile /var/log/redis-sentinel-<%= @title %>.log
+pidfile /var/run/redis-sentinel.pid
+
+logfile /var/log/redis-sentinel.log
 loglevel <%= @sentinel_loglevel %>
 
 port <%= @sentinel_port -%>

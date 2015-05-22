@@ -35,7 +35,7 @@
 #
 # === Examples
 #
-# redis::sentinel { 'sentinel':
+# class { 'redis::sentinel':
 #   sentinel_monitors => {
 #     '0' => {
 #       master-host => '127.0.0.1',
@@ -59,25 +59,25 @@ define redis::sentinel (
   Exec['install-redis'] -> Redis::Sentinel[$name]
   include redis
 
-  file { "sentinel-init-${title}":
+  file { "sentinel-init":
     ensure  => present,
-    path    => "/etc/init.d/sentinel-${title}",
+    path    => "/etc/init.d/sentinel",
     mode    => '0755',
     content => template('redis/sentinel.init.erb'),
-    notify  => Service["sentinel-${title}"],
+    notify  => Service["sentinel"],
   }
-  file { "sentinel-${title}.conf":
+  file { "sentinel.conf":
     ensure  => present,
-    path    => "/etc/redis/sentinel.${title}.conf",
+    path    => "/etc/redis/sentinel.conf",
     mode    => '0644',
     content => template('redis/sentinel.conf.erb'),
   }
 
-  service { "sentinel-${title}":
+  service { "sentinel":
     ensure    => running,
-    name      => "sentinel-${title}",
+    name      => "sentinel",
     enable    => true,
-    require   => [ File["sentinel-${title}.conf"], File["sentinel-init-${title}"] ],
-    subscribe => File["sentinel-${title}.conf"],
+    require   => [ File["sentinel.conf"], File["sentinel-init"] ],
+    subscribe => File["sentinel.conf"],
   }
 }
