@@ -78,7 +78,7 @@ define redis::sentinel (
 
   file { "sentinel.log":
     ensure  => present,
-    path    => "/var/log/sentinel.log",
+    path    => "/var/log/redis-sentinel.log",
     mode    => '0644',
     owner   => $sentinel_user,
   }
