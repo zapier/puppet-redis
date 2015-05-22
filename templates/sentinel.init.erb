@@ -11,7 +11,7 @@
 # Source function library.
 . /lib/lsb/init-functions
 
-REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel <%= @sentinel_args -%>
+REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel
 REDIS_NAME="redis-sentinel_<%= @title %>"
 REDIS_PID="/var/run/redis-sentinel-<%= @title %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @title %>"
@@ -25,7 +25,7 @@ start() {
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE <%= @sentinel_args -%>"
 
     retval=$?
     log_end_msg $retval
