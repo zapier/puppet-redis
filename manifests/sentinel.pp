@@ -51,7 +51,8 @@ define redis::sentinel (
   $sentinel_bind_address = $redis::params::sentinel_bind_address,
   $sentinel_loglevel     = $redis::params::sentinel_loglevel,
   $sentinel_monitors     = $redis::params::sentinel_monitors,
-  $sentinel_args         = $redis::params::sentinel_args
+  $sentinel_args         = $redis::params::sentinel_args,
+  $sentinel_user         = $redis::params::sentinel_user
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing
@@ -59,6 +60,10 @@ define redis::sentinel (
   Exec['install-redis'] -> Redis::Sentinel[$name]
   include redis
 
+  File {
+    owner => $sentinel_user,
+    group => $sentinel_group
+  }
   file { "sentinel-init":
     ensure  => present,
     path    => "/etc/init.d/sentinel",
