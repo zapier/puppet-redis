@@ -13,12 +13,14 @@
 
 REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-server
 REDIS_NAME="redis-<%= @title -%>"
-REDIS_PID="/var/run/redis-<%= @title %>.pid"
+REDIS_PID="/var/run/redis/<%= @title %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-server-<%= @title -%>"
 REDIS_CONF_FILE="/etc/redis/<%= @title %>.conf"
 REDIS_USER=<%= @redis_user -%>
 
 [ -x "$REDIS_EXEC" ] || exit 5
+
+mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
 
 start() {
     local retval
