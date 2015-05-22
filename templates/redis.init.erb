@@ -1,97 +1,105 @@
 #!/bin/sh
-#Configurations injected by install_server below....
+#
+# redis - this script starts and stops the redis-server daemon
+#
+# chkconfig:   - 85 15
+# description: Redis Sentinel is a monitor for redis servers
+# processname: redis-sentinel
+# config:      /etc/redis/sentinel.conf
+# pidfile:     /var/run/redis-sentinel.pid
 
-REDIS_PORT="<%= @redis_port %>"
-REDIS_BIND_ADDRESS="<%= @redis_bind_address ? @redis_bind_address : '127.0.0.1' %>"
+# Source function library.
+. /lib/lsb/init-functions
 
-EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-server
-CLIEXEC="<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-cli -h $REDIS_BIND_ADDRESS -p $REDIS_PORT <%= @redis_password ? '-a ' + @redis_password : '' %>"
-PIDFILE="/var/run/redis-<%= @title %>.pid"
-CONF="/etc/redis/<%= @title %>.conf"
+REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-server
+REDIS_NAME="redis-<%= @title -%>"
+REDIS_PID="/var/run/redis-<%= @title %>.pid"
+REDIS_LOCKFILE="/var/lock/redis-server-<%= @title -%>"
+REDIS_CONF_FILE="/etc/redis/<%= @title %>.conf"
+REDIS_USER=<%= @redis_user -%>
 
-###############
+[ -x "$REDIS_EXEC" ] || exit 5
 
-# chkconfig: 2345 95 20
-# description: redis_<%= @redis_port %> is the redis daemon.
-### BEGIN INIT INFO
-# Provides: redis_<%= @redis_port %>
-# Required-Start: 
-# Required-Stop: 
-# Should-Start: 
-# Should-Stop: 
-# Short-Description: start and stop redis_<%= @redis_port %>
-# Description: Redis daemon
-### END INIT INFO
+start() {
+    local retval
 
-set -e
+    [ -f "$REDIS_CONF_FILE" ] || exit 6
 
-start()
-{
-    if [ -x $PIDFILE ]
-    then
-        echo "$PIDFILE exists, process is already running or crashed"
-    else
-        echo "Starting Redis server..."
-        $EXEC $CONF
-    fi
+    log_daemon_msg "Starting $REDIS_NAME"
+    start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+
+    retval=$?
+    log_end_msg $retval
+    [ $retval -eq 0 ] && touch "$REDIS_LOCKFILE"
+
+    return $retval
 }
 
-stop()
-{
-    if [ ! -f $PIDFILE ]
-    then
-        echo "$PIDFILE does not exist, process is not running"
-    else
-        PID=$(cat $PIDFILE)
-        echo "Stopping ..."
-        $CLIEXEC shutdown || /bin/true
-        while [ -x /proc/${PID} ]
-        do
-            echo "Waiting for Redis to shutdown ..."
-            sleep 1
-        done
-        echo "Redis stopped"
-    fi
+stop() {
+    local retval
+
+    log_daemon_msg "Stopping $REDIS_NAME"
+    start-stop-daemon --stop --quiet --signal QUIT --pidfile "$REDIS_PID" --retry 5 --oknodo --exec "$REDIS_EXEC"
+
+    retval=$?
+    log_end_msg $retval
+    [ $retval -eq 0 ] && rm -f "$REDIS_LOCKFILE" "$REDIS_PID"
+
+    return $retval
 }
 
-restart()
-{
+restart() {
     stop
-    echo "Sleeping for 3 seconds..."
-    sleep 3
+    sleep 1
     start
 }
 
-status()
-{
-    if [ ! -f $PIDFILE ]
-    then
-  echo "$PIDFILE does not exist, redis is not running"
-  exit 3
-    elif [ ! -x /proc/$(cat $PIDFILE) ]
-    then
-  echo "$PIDFILE exists, process is not running though"
-  exit 1
-    else
-  echo "redis is running with PID $(cat $PIDFILE)"
-  exit 0
-    fi
+reload() {
+    local retval
+
+    log_daemon_msg "Stopping $REDIS_NAME"
+    killproc -p"$pidfile" $redis -HUP
+    start-stop-daemon --stop --quiet --signal HUP --pidfile "$REDIS_PID" --oknodo --exec "$REDIS_EXEC"
+
+    retval=$?
+    log_end_msg $retval
+    return $retval
+}
+
+status() {
+    local retval
+    status_of_proc -p "$REDIS_PID" "$REDIS_EXEC" "$REDIS_NAME"
+    retval=$?
+    return $retval
+}
+
+status_q() {
+    status >/dev/null 2>&1
 }
 
 case "$1" in
     start)
-  start 
-  ;;
+        status_q && exit 0
+        start
+        ;;
     stop)
-  stop
+        status_q || exit 0
+        stop
         ;;
-    restart)
-  restart
-  ;;
+    restart|configtest|force-reload)
+        restart
+        ;;
+    reload)
+        rh_status_q || exit 7
+        reload
+        ;;
     status)
-  status
-  ;;
-    *)
-        echo "Usage: $SCRIPTNAME {start|stop|restart|status}"
+        status
         ;;
+    condrestart|try-restart)
+        status_q || exit 0
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+        exit 2
 esac

@@ -81,6 +81,7 @@ define redis::instance (
   $redis_slaveof_ip               = $redis::params::redis_slaveof_ip,
   $redis_read_only_slave          = $redis::params::redis_read_only_slave,
   $redis_saves                    = $redis::params::redis_saves
+  $redis_user                     = $redis::params::redis_user
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing
