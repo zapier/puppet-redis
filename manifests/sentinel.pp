@@ -67,6 +67,7 @@ define redis::sentinel (
     content => template('redis/sentinel.init.erb'),
     notify  => Service["sentinel"],
   }
+
   file { "sentinel.conf":
     ensure  => present,
     path    => "/etc/redis/sentinel.conf",
@@ -75,11 +76,18 @@ define redis::sentinel (
     owner   => $sentinel_user,
   }
 
+  file { "sentinel.log":
+    ensure  => present,
+    path    => "/var/log/sentinel.log",
+    mode    => '0644',
+    owner   => $sentinel_user,
+  }
+
   service { "sentinel":
     ensure    => running,
     name      => "sentinel",
     enable    => true,
-    require   => [ File["sentinel.conf"], File["sentinel-init"] ],
+    require   => [ File["sentinel-init"], File["sentinel.conf"], File["sentinel.log"] ],
     subscribe => File["sentinel.conf"],
   }
 }

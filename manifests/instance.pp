@@ -115,6 +115,7 @@ define redis::instance (
     content => template('redis/redis.init.erb'),
     notify  => Service["redis-${title}"],
   }
+
   file { "redis-${title}.conf":
     ensure  => present,
     path    => "/etc/redis/${title}.conf",
@@ -123,11 +124,18 @@ define redis::instance (
     owner   => $redis_user,
   }
 
+  file { "redis-${title}.log":
+    ensure  => present,
+    path    => "/var/log/redis-${title}.log",
+    mode    => '0644',
+    owner   => $redis_user,
+  }
+
   service { "redis-${title}":
     ensure    => running,
     name      => "redis-${title}",
     enable    => true,
-    require   => [ File["redis-${title}.conf"], File["redis-init-${title}"] ],
+    require   => [ File["redis-init-${title}"], File["redis-${title}.conf"], File["redis-${title}.log"] ],
     subscribe => File["redis-${title}.conf"],
   }
 }
