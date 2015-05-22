@@ -13,8 +13,8 @@
 #   verbose, notice, and warning.
 #   Default: notice
 #
-# [*sentinel_redis_password*]
-#   Password used to connect to redis. Will be used if it is not nil.
+# [*sentinel_args*]
+#   Additional arguments to pass to the redis-sentinel command when launching.
 #   Default: nil
 #
 # [*sentinel_monitors*]
@@ -51,6 +51,7 @@ define redis::sentinel (
   $sentinel_bind_address = $redis::params::sentinel_bind_address,
   $sentinel_loglevel     = $redis::params::sentinel_loglevel,
   $sentinel_monitors     = $redis::params::sentinel_monitors
+  $sentinel_args         = $redis::params::sentinel_args
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing

@@ -34,6 +34,7 @@ class redis::params {
 
   $sentinel_port = '26379'
   $sentinel_loglevel = 'notice'
+  $sentinel_args = false
   $sentinel_monitors = {
     'mymaster' => {
       master-host => '127.0.0.1',

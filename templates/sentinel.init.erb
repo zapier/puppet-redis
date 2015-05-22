@@ -11,7 +11,7 @@
 # Source function library.
 . /lib/lsb/init-functions
 
-REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel
+REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel <%= @sentinel_args -%>
 REDIS_NAME="redis-sentinel_<%= @title %>"
 REDIS_PID="/var/run/redis-sentinel-<%= @title %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @title %>"
