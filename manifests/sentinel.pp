@@ -50,7 +50,7 @@ define redis::sentinel (
   $sentinel_port         = $redis::params::sentinel_port,
   $sentinel_bind_address = $redis::params::sentinel_bind_address,
   $sentinel_loglevel     = $redis::params::sentinel_loglevel,
-  $sentinel_monitors     = $redis::params::sentinel_monitors
+  $sentinel_monitors     = $redis::params::sentinel_monitors,
   $sentinel_args         = $redis::params::sentinel_args
 ) {
 
