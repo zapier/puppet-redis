@@ -120,6 +120,7 @@ define redis::instance (
     path    => "/etc/redis/${title}.conf",
     mode    => '0644',
     content => template('redis/redis.conf.erb'),
+    owner   => $sentinel_user,
   }
 
   service { "redis-${title}":

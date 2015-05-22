@@ -60,10 +60,6 @@ define redis::sentinel (
   Exec['install-redis'] -> Redis::Sentinel[$name]
   include redis
 
-  File {
-    owner => $sentinel_user,
-    group => $sentinel_group
-  }
   file { "sentinel-init":
     ensure  => present,
     path    => "/etc/init.d/sentinel",
@@ -76,6 +72,7 @@ define redis::sentinel (
     path    => "/etc/redis/sentinel.conf",
     mode    => '0644',
     content => template('redis/sentinel.conf.erb'),
+    owner   => $sentinel_user,
   }
 
   service { "sentinel":
