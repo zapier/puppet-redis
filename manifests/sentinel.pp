@@ -65,7 +65,7 @@ define redis::sentinel (
     path    => "/etc/init.d/redis-sentinel",
     mode    => '0755',
     content => template('redis/sentinel.init.erb'),
-    notify  => Service["sentinel"],
+    notify  => Service["redis-sentinel"],
   }
 
   file { "sentinel.conf":
