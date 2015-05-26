@@ -24,6 +24,8 @@ REDIS_USER=<%= @redis_user -%>
 mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
 mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
 
+touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
+
 start() {
     local retval
 
