@@ -107,13 +107,9 @@ databases <%= @redis_databases %>
 #
 #   save ""
 
-# custom zapier settings
-<% if @redis_save %>
-save <%= @redis_save %>
-<% else %>
-# longer than 16 minutes
-save 1009 1
-<% end %>
+<% if @redis_saves %>
+<%= @redis_saves.join("\n") %>
+<% end -%>
 
 # By default Redis will stop accepting writes if RDB snapshots are enabled
 # (at least one save point) and the latest background save failed.
