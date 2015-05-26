@@ -3,10 +3,10 @@
 # redis - this script starts and stops the redis-server daemon
 #
 # chkconfig:   - 85 15
-# description: Redis Sentinel is a monitor for redis servers
-# processname: redis-sentinel
-# config:      /etc/redis/sentinel.conf
-# pidfile:     /var/run/redis-sentinel.pid
+# description: Redis is an advanced key-value store
+# processname: redis-<%= @title -%>
+# config:      /etc/redis/<%= @title %>.conf
+# pidfile:     /var/run/redis/<%= @title %>.pid
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -21,6 +21,7 @@ REDIS_USER=<%= @redis_user -%>
 [ -x "$REDIS_EXEC" ] || exit 5
 
 mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
+mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
 
 start() {
     local retval

@@ -6,7 +6,7 @@
 # description: Redis Sentinel is a monitor for redis servers
 # processname: redis-sentinel
 # config:      /etc/redis/sentinel.conf
-# pidfile:     /var/run/redis-sentinel.pid
+# pidfile:     /var/run/redis/sentinel.pid
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -21,6 +21,7 @@ REDIS_USER=<%= @sentinel_user -%>
 [ -x "$REDIS_EXEC" ] || exit 5
 
 mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
+mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
 
 start() {
     local retval
