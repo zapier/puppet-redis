@@ -16,6 +16,7 @@ REDIS_NAME="redis-sentinel"
 REDIS_PID="/var/run/redis/sentinel.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel"
 REDIS_CONF_FILE="/etc/redis/sentinel.conf"
+REDIS_LOG_FILE="/var/log/redis/sentinel.log"
 REDIS_USER=<%= @sentinel_user -%>
 
 [ -x "$REDIS_EXEC" ] || exit 5
@@ -29,7 +30,8 @@ start() {
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" <%= @sentinel_args -%>
+    sleep 5
+    start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" <%= @sentinel_args -%> >> $REDIS_LOG_FILE 2>&1
 
     retval=$?
     log_end_msg $retval
