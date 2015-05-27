@@ -127,7 +127,7 @@ define redis::instance (
 
   file { "redis-${title}.log":
     ensure  => present,
-    path    => "/var/log/redis-${title}.log",
+    path    => "/var/log/redis/${title}.log",
     mode    => '0644',
     owner   => $redis_user,
   }
