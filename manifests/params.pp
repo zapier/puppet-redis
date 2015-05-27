@@ -27,6 +27,7 @@ class redis::params {
   $redis_slowlog_max_len = 1024
   $redis_password = false
   $redis_slaveof_ip = false
+  $redis_slave_priority = 100
   $redis_read_only_slave = 'yes'
   $redis_saves = ['save 900 1', 'save 300 10', 'save 60 10000']
   $redis_user = 'root'
