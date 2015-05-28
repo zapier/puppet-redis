@@ -31,6 +31,12 @@ start() {
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
+    # lift the open file limit completely
+    ulimit -n unlimited
+
+    # disable THP (see http://redis.io/topics/admin)
+    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
     log_daemon_msg "Starting $REDIS_NAME"
     start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" >> $REDIS_LOG_FILE 2>&1
 
