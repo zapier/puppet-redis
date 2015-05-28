@@ -32,7 +32,7 @@ start() {
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
     # lift the open file limit completely
-    ulimit -n unlimited
+    ulimit -n 65535
 
     # disable THP (see http://redis.io/topics/admin)
     echo never > /sys/kernel/mm/transparent_hugepage/enabled
