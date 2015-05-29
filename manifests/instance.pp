@@ -125,18 +125,11 @@ define redis::instance (
     owner   => $redis_user,
   }
 
-  file { "redis-${title}.log":
-    ensure  => present,
-    path    => "/var/log/redis/${title}.log",
-    mode    => '0644',
-    owner   => $redis_user,
-  }
-
   service { "redis-${title}":
     ensure    => running,
     name      => "redis-${title}",
     enable    => true,
-    require   => [ File["redis-init-${title}"], File["redis-${title}.conf"], File["redis-${title}.log"] ],
+    require   => [ File["redis-init-${title}"], File["redis-${title}.conf"] ],
     subscribe => File["redis-${title}.conf"],
   }
 }
