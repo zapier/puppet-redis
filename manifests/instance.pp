@@ -79,8 +79,10 @@ define redis::instance (
   $redis_slowlog_max_len          = $redis::params::redis_slowlog_max_len,
   $redis_password                 = $redis::params::redis_password,
   $redis_slaveof_ip               = $redis::params::redis_slaveof_ip,
+  $redis_slave_priority           = $redis::params::redis_slave_priority,
   $redis_read_only_slave          = $redis::params::redis_read_only_slave,
-  $redis_saves                    = $redis::params::redis_saves
+  $redis_saves                    = $redis::params::redis_saves,
+  $redis_user                     = $redis::params::redis_user
 ) {
 
   # Using Exec as a dependency here to avoid dependency cyclying when doing
@@ -114,18 +116,20 @@ define redis::instance (
     content => template('redis/redis.init.erb'),
     notify  => Service["redis-${title}"],
   }
+
   file { "redis-${title}.conf":
     ensure  => present,
     path    => "/etc/redis/${title}.conf",
     mode    => '0644',
     content => template('redis/redis.conf.erb'),
+    owner   => $redis_user,
   }
 
   service { "redis-${title}":
     ensure    => running,
     name      => "redis-${title}",
     enable    => true,
-    require   => [ File["redis-${title}.conf"], File["redis-init-${title}"] ],
+    require   => [ File["redis-init-${title}"], File["redis-${title}.conf"] ],
     subscribe => File["redis-${title}.conf"],
   }
 }

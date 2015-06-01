@@ -18,7 +18,7 @@ daemonize yes
 
 # When running daemonized, Redis writes a pid file in /var/run/redis.pid by
 # default. You can specify a custom pid file location here.
-pidfile /var/run/redis-<%= @redis_port %>.pid
+pidfile /var/run/redis/<%= @title %>.pid
 
 # Accept connections on the specified port, default is 6379.
 # If port 0 is specified Redis will not listen on a TCP socket.
@@ -68,7 +68,7 @@ loglevel <%= @redis_loglevel %>
 # Specify the log file name. Also 'stdout' can be used to force
 # Redis to log on the standard output. Note that if you use standard
 # output for logging but daemonize, logs will be sent to /dev/null
-logfile /var/log/redis-<%= @title %>.log
+logfile /var/log/redis/<%= @title %>.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
@@ -107,13 +107,9 @@ databases <%= @redis_databases %>
 #
 #   save ""
 
-# custom zapier settings
-<% if @redis_save %>
-save <%= @redis_save %>
-<% else %>
-# longer than 16 minutes
-save 1009 1
-<% end %>
+<% if @redis_saves %>
+<%= @redis_saves.join("\n") %>
+<% end -%>
 
 # By default Redis will stop accepting writes if RDB snapshots are enabled
 # (at least one save point) and the latest background save failed.
@@ -248,7 +244,7 @@ repl-disable-tcp-nodelay no
 # Redis Sentinel for promotion.
 #
 # By default the priority is 100.
-slave-priority 100
+slave-priority <%= @redis_slave_priority %>
 
 ################################## SECURITY ###################################
 

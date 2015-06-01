@@ -1,23 +1,23 @@
 #!/bin/sh
 #
-# redis - this script starts and stops the redis-server daemon
+# redis - this script starts and stops the redis-sentinel daemon
 #
 # chkconfig:   - 85 15
-# description: Redis is an advanced key-value store
-# processname: redis-<%= @title -%>
-# config:      /etc/redis/<%= @title %>.conf
-# pidfile:     /var/run/redis/<%= @title %>.pid
+# description: Redis Sentinel is a monitor for redis servers
+# processname: redis-sentinel
+# config:      /etc/redis/sentinel.conf
+# pidfile:     /var/run/redis/sentinel.pid
 
 # Source function library.
 . /lib/lsb/init-functions
 
-REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-server
-REDIS_NAME="redis-<%= @title -%>"
-REDIS_PID="/var/run/redis/<%= @title %>.pid"
-REDIS_LOCKFILE="/var/lock/redis-server-<%= @title -%>"
-REDIS_CONF_FILE="/etc/redis/<%= @title %>.conf"
-REDIS_LOG_FILE="/var/log/redis/<%= @title %>.log"
-REDIS_USER=<%= @redis_user -%>
+REDIS_EXEC=<%= scope.lookupvar('redis::redis_bin_dir') %>/bin/redis-sentinel
+REDIS_NAME="redis-sentinel"
+REDIS_PID="/var/run/redis/sentinel.pid"
+REDIS_LOCKFILE="/var/lock/redis-sentinel"
+REDIS_CONF_FILE="/etc/redis/sentinel.conf"
+REDIS_LOG_FILE="/var/log/redis/sentinel.log"
+REDIS_USER=<%= @sentinel_user -%>
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
@@ -31,14 +31,9 @@ start() {
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
-    # lift the open file limit completely
-    ulimit -n 65535
-
-    # disable THP (see http://redis.io/topics/admin)
-    echo never > /sys/kernel/mm/transparent_hugepage/enabled
-
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" >> $REDIS_LOG_FILE 2>&1
+    sleep 5
+    start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" <%= @sentinel_args -%> >> $REDIS_LOG_FILE 2>&1
 
     retval=$?
     log_end_msg $retval
