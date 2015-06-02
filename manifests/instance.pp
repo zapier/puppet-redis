@@ -36,6 +36,10 @@
 #   Set the redis config value databases.
 #   Default: 16
 #
+# [*redis_dir*]
+#   Set the dir config parameter (where the AOF/RDB files are stored)
+#   Default: /var/lib/redis
+#
 # [*redis_slowlog_log_slower_than*]
 #   Set the redis config value slowlog-log-slower-than (microseconds).
 #   Default: 10000
@@ -75,6 +79,7 @@ define redis::instance (
   $redis_timeout                  = $redis::params::redis_timeout,
   $redis_loglevel                 = $redis::params::redis_loglevel,
   $redis_databases                = $redis::params::redis_databases,
+  $redis_dir                      = $redis::params::redis_dir,
   $redis_slowlog_log_slower_than  = $redis::params::redis_slowlog_log_slower_than,
   $redis_slowlog_max_len          = $redis::params::redis_slowlog_max_len,
   $redis_password                 = $redis::params::redis_password,
