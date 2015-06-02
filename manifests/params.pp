@@ -23,6 +23,7 @@ class redis::params {
   $redis_timeout = 300         # 0 = disabled
   $redis_loglevel = 'notice'
   $redis_databases = 16
+  $redis_dir = '/var/lib/redis'
   $redis_slowlog_log_slower_than = 10000 # microseconds
   $redis_slowlog_max_len = 1024
   $redis_password = false

@@ -18,11 +18,14 @@ REDIS_LOCKFILE="/var/lock/redis-server-<%= @title -%>"
 REDIS_CONF_FILE="/etc/redis/<%= @title %>.conf"
 REDIS_LOG_FILE="/var/log/redis/<%= @title %>.log"
 REDIS_USER=<%= @redis_user -%>
+REDIS_DIR=<%= @redis_dir %>
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
 mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
 mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
+
+mkdir -p $REDIS_DIR && chown $REDIS_USER $REDIS_DIR
 
 touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
 
