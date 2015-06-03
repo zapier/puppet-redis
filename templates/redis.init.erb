@@ -22,13 +22,6 @@ REDIS_DIR=<%= @redis_dir %>
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
-mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
-mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
-
-mkdir -p $REDIS_DIR && chown $REDIS_USER $REDIS_DIR
-
-touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
-
 start() {
     local retval
 
@@ -41,6 +34,17 @@ start() {
     echo never > /sys/kernel/mm/transparent_hugepage/enabled
 
     log_daemon_msg "Starting $REDIS_NAME"
+
+    # wait to allow changes to take effect
+    sleep 3
+
+    # create required directories and set ownership
+    mkdir -p $REDIS_DIR && chown $REDIS_USER $REDIS_DIR
+    mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
+    mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
+
+    touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
+
     start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" >> $REDIS_LOG_FILE 2>&1
 
     retval=$?
@@ -65,7 +69,8 @@ stop() {
 
 restart() {
     stop
-    sleep 1
+    # wait to force Sentinel to failover
+    sleep 35
     start
 }
 

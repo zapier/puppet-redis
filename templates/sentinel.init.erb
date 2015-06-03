@@ -21,10 +21,6 @@ REDIS_USER=<%= @sentinel_user -%>
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
-mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
-mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
-
-touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
 
 start() {
     local retval
@@ -32,7 +28,16 @@ start() {
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
     log_daemon_msg "Starting $REDIS_NAME"
+
+    # wait to allow changes to take effect
     sleep 5
+
+    # create required directories and set ownership
+    mkdir -p /var/run/redis && chown $REDIS_USER /var/run/redis
+    mkdir -p /var/log/redis && chown $REDIS_USER /var/log/redis
+
+    touch $REDIS_LOG_FILE && chown $REDIS_USER $REDIS_LOG_FILE
+
     start-stop-daemon --start --chuid $REDIS_USER --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE" <%= @sentinel_args -%> >> $REDIS_LOG_FILE 2>&1
 
     retval=$?
