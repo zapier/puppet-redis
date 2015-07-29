@@ -6,6 +6,7 @@ logfile /var/log/redis/sentinel.log
 loglevel <%= @sentinel_loglevel %>
 
 port <%= @sentinel_port -%>
+maxclients 65000
 
 <% sentinel_monitors.sort.each do |name, rule| %>
 sentinel monitor <%= name -%> <%= rule['master-host'] -%>  <%= rule['master-port'] -%> <%= rule['quorum'] %>
