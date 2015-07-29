@@ -26,6 +26,9 @@ start() {
     local retval
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
+    
+    # lift the open file limit completely
+    ulimit -n 65535
 
     log_daemon_msg "Starting $REDIS_NAME"
 
