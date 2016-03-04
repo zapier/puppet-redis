@@ -131,7 +131,7 @@ define redis::instance (
   }
 
   service { "redis-${title}":
-    ensure    => running,
+    ensure    => stopped,
     name      => "redis-${title}",
     enable    => true,
     require   => [ File["redis-init-${title}"], File["redis-${title}.conf"] ],
